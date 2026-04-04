@@ -13,7 +13,7 @@ import '../bloc/feed_bloc.dart';
 import '../widgets/city_filter_sheet.dart';
 import '../widgets/city_prompt_sheet.dart';
 import '../widgets/story_card.dart';
-import '../../../../injection.dart';
+import '../../../../di/injection.dart';
 
 /// Main news feed screen ("News By You").
 ///

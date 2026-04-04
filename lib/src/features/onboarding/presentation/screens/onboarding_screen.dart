@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../injection.dart';
+import '../../../../di/injection.dart';
 import '../../data/onboarding_preferences.dart';
 import '../widgets/dot_indicator.dart';
 import '../widgets/onboarding_page.dart';

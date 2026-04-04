@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../injection.dart';
+import '../../../../di/injection.dart';
 import '../../domain/repositories/community_repository.dart';
 
 /// Bottom sheet for reporting a creator or story.

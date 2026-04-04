@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_colors.dart';
-import '../../../../injection.dart';
+import '../../../../di/injection.dart';
 import '../../domain/usecases/get_shareable_link_usecase.dart';
 
 /// Share button widget for story detail and story cards.

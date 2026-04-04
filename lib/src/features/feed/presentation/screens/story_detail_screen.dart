@@ -7,7 +7,7 @@ import '../../../../core/constants/api_constants.dart';
 import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/relative_time.dart';
-import '../../../../injection.dart';
+import '../../../../di/injection.dart';
 import '../../../../auth/auth_status.dart';
 import '../../../../config/mai_bhi_editor_initializer.dart';
 import '../../../community/presentation/widgets/report_bottom_sheet.dart';

@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/router/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../injection.dart';
+import '../../../../di/injection.dart';
 import '../../../../config/mai_bhi_editor_initializer.dart';
 import '../bloc/settings_bloc.dart';
 

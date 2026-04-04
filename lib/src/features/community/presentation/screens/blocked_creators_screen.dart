@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../injection.dart';
+import '../../../../di/injection.dart';
 import '../../domain/entities/creator_profile.dart';
 import '../../domain/repositories/community_repository.dart';
 
