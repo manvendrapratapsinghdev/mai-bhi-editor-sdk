@@ -13,7 +13,9 @@ import 'mbe_screen_builder.dart';
 class MbeRouter {
   MbeRouter._();
 
-  static final GlobalKey<NavigatorState> _rootNavigatorKey =
+  /// Root navigator key. Host apps can use this to push modal screens
+  /// (e.g. login) on top of the SDK's router.
+  static final GlobalKey<NavigatorState> rootNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'mbe_root');
 
   /// Routes that don't require authentication.
@@ -44,7 +46,7 @@ class MbeRouter {
   }
 
   static GoRouter _createRouter() => GoRouter(
-    navigatorKey: _rootNavigatorKey,
+    navigatorKey: rootNavigatorKey,
     initialLocation: MbeRoutes.feed,
     debugLogDiagnostics: true,
     routes: [

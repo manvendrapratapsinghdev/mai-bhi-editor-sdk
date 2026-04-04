@@ -143,6 +143,10 @@ class MaiBhiEditor {
     return MbeRouter.router;
   }
 
+  /// Root navigator key. Use this to push modal screens (e.g. login)
+  /// on top of the SDK's navigation stack.
+  static GlobalKey<NavigatorState> get navigatorKey => MbeRouter.rootNavigatorKey;
+
   // ── Theme ─────────────────────────────────────────────────────────────
 
   /// Light theme derived from the active design system.
