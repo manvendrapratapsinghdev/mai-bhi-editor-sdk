@@ -1,0 +1,22 @@
+# Dart/Flutter
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# macOS
+.DS_Store
+
+# Generated files (keep checked in for consumers without build_runner)
+# *.g.dart
+# *.freezed.dart
+
+# Coverage
+coverage/

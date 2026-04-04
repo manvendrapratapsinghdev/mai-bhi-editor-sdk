@@ -1,0 +1,66 @@
+name: mai_bhi_editor_sdk
+description: "Mai Bhi Editor - Reusable citizen journalism SDK for Flutter apps"
+version: 1.0.0
+homepage: https://github.com/AskHT/mai-bhi-editor-sdk
+repository: https://github.com/AskHT/mai-bhi-editor-sdk
+issue_tracker: https://github.com/AskHT/mai-bhi-editor-sdk/issues
+
+environment:
+  sdk: ^3.11.3
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # UI
+  cupertino_icons: ^1.0.8
+  google_fonts: ^6.2.1
+  cached_network_image: ^3.4.1
+
+  # State Management
+  flutter_bloc: ^9.1.0
+  equatable: ^2.0.7
+
+  # Navigation
+  go_router: ^14.8.1
+
+  # Networking
+  dio: ^5.7.0
+  json_annotation: ^4.9.0
+
+  # Code Generation (runtime)
+  freezed_annotation: ^3.1.0
+
+  # Dependency Injection
+  get_it: ^8.0.3
+
+  # Local Storage
+  flutter_secure_storage: ^9.2.4
+  shared_preferences: ^2.5.2
+
+  # Image handling
+  image_picker: ^1.1.2
+
+  # Intl
+  intl: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+  # Code Generation
+  build_runner: any
+  freezed: ^3.1.0
+  json_serializable: any
+
+  # Testing
+  bloc_test: any
+  mocktail: ^1.0.4
+
+flutter:
+  uses-material-design: true
+  generate: true

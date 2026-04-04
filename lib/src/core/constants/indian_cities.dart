@@ -1,0 +1,36 @@
+/// Default list of Indian cities for the submission form city dropdown.
+///
+/// Sourced from major metro and tier-2 cities. Host apps can override
+/// this via [MaiBhiEditorConfig.cities].
+const List<String> kIndianCities = [
+  'Agra',
+  'Ahmedabad',
+  'Bangalore',
+  'Bhopal',
+  'Bhubaneswar',
+  'Chandigarh',
+  'Chennai',
+  'Coimbatore',
+  'Dehradun',
+  'Delhi',
+  'Gurgaon',
+  'Guwahati',
+  'Hyderabad',
+  'Indore',
+  'Jaipur',
+  'Kochi',
+  'Kolkata',
+  'Lucknow',
+  'Mumbai',
+  'Nagpur',
+  'Noida',
+  'Patna',
+  'Pune',
+  'Raipur',
+  'Ranchi',
+  'Surat',
+  'Thiruvananthapuram',
+  'Vadodara',
+  'Varanasi',
+  'Visakhapatnam',
+];

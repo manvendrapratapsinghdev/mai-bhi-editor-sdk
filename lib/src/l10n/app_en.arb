@@ -1,0 +1,189 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "Mai Bhi Editor",
+  "@appTitle": { "description": "The application title" },
+
+  "login": "Login",
+  "email": "Email",
+  "password": "Password",
+  "loginButton": "Sign In",
+  "loginError": "Invalid email or password",
+  "loginSubtitle": "Citizen journalism by Hindustan Times",
+  "emailHint": "you@example.com",
+  "emailRequired": "Email is required",
+  "emailInvalid": "Enter a valid email address",
+  "passwordRequired": "Password is required",
+  "passwordTooShort": "Password must be at least 6 characters",
+  "signingIn": "Signing in, please wait",
+  "termsFooter": "By signing in, you agree to the HT Terms of Service.",
+  "logout": "Logout",
+  "logoutConfirmTitle": "Log Out",
+  "logoutConfirmMessage": "Are you sure you want to log out?",
+  "cancel": "Cancel",
+
+  "profile": "Profile",
+  "myProfile": "My Profile",
+  "reputation": "Reputation",
+  "published": "Published",
+  "cityLabel": "City",
+  "cityNotSet": "Not set",
+  "level": "Level",
+  "badges": "Badges",
+  "noBadges": "No badges earned yet",
+  "blockedCreators": "Blocked Creators",
+  "upgradeToApproved": "Upgrade to Approved Creator",
+  "unableToLoadProfile": "Unable to load profile",
+
+  "submit": "Submit",
+  "submitNews": "Submit News",
+  "submitReport": "Submit Report",
+  "title": "Title",
+  "titleHint": "What happened?",
+  "titleRequired": "Title is required",
+  "description": "Description",
+  "descriptionHint": "Describe what you witnessed in detail...",
+  "descriptionRequired": "Description is required",
+  "city": "City",
+  "citySearchHint": "Search city...",
+  "cityRequired": "City is required",
+  "tags": "Tags",
+  "coverImage": "Cover Image",
+  "coverImageRequired": "Cover image is required",
+  "tapToAddCoverImage": "Tap to add cover image",
+  "additionalImages": "Additional Images",
+  "addMoreImages": "Add More Images",
+  "selectCoverImage": "Select Cover Image",
+  "addImage": "Add Image",
+  "camera": "Camera",
+  "gallery": "Gallery",
+  "saveDraft": "Save Draft",
+  "draftSaved": "Draft saved",
+  "unsavedChangesTitle": "Unsaved Changes",
+  "unsavedChangesMessage": "You have unsaved content. Would you like to save it as a draft?",
+  "discard": "Discard",
+  "submissionSuccess": "Submission created successfully!",
+  "failedToPickImage": "Failed to pick image",
+
+  "postedByYou": "Posted by You",
+  "newsFeed": "News By You",
+  "trending": "Trending",
+  "searchStories": "Search stories",
+  "searchStoriesHint": "Search stories...",
+  "recentSearches": "Recent Searches",
+  "clearAll": "Clear All",
+  "searchForStories": "Search for stories",
+  "noStoriesYet": "No stories yet.\nBe the first to submit!",
+  "noStoriesInCity": "No stories yet from {city}.\nBe the first reporter!",
+  "@noStoriesInCity": {
+    "placeholders": {
+      "city": { "type": "String" }
+    }
+  },
+  "noSearchResults": "No stories found for '{query}'",
+  "@noSearchResults": {
+    "placeholders": {
+      "query": { "type": "String" }
+    }
+  },
+  "submitAStory": "Submit a Story",
+  "filterByCity": "Filter by city",
+
+  "confirm": "Confirm",
+  "like": "Like",
+  "share": "Share",
+  "confirmations": "{count} confirmations",
+  "@confirmations": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "likes": "{count} likes",
+  "@likes": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "editorialQueue": "Editorial Queue",
+  "approve": "Approve",
+  "reject": "Reject",
+  "edit": "Edit",
+  "markCorrection": "Mark Correction",
+
+  "statusDraft": "Draft",
+  "statusInProgress": "In Progress",
+  "statusUnderReview": "Under Review",
+  "statusPublished": "Published",
+  "statusRejected": "Rejected",
+
+  "noResults": "No results found",
+  "retry": "Retry",
+  "networkError": "Network error. Please try again.",
+  "serverError": "Server error. Please try later.",
+  "unexpectedError": "An unexpected error occurred. Please try again.",
+  "rateLimitError": "Too many attempts. Please wait a moment.",
+  "accountSuspended": "Account is suspended. Contact support.",
+  "accountNotFound": "Account not found.",
+  "checkInput": "Please check your input and try again.",
+  "failedToLoadProfile": "Failed to load profile.",
+
+  "notifications": "Notifications",
+  "markAllRead": "Mark all read",
+  "noNotificationsYet": "No notifications yet",
+  "noNotificationsDescription": "You will see updates about your stories, milestones, and community activity here.",
+  "notificationStoryApproved": "Story Approved",
+  "notificationStoryRejected": "Story Rejected",
+  "notificationCorrectionNeeded": "Correction Needed",
+  "notificationMilestone": "Milestone Reached",
+  "notificationBadge": "New Badge Earned",
+  "notificationTrending": "Trending Story",
+  "notificationCommunity": "Community Activity",
+
+  "settings": "Settings",
+  "notificationPreferences": "Notification Preferences",
+  "storyUpdates": "Story Updates",
+  "storyUpdatesDesc": "Approved, rejected, and correction notifications",
+  "milestonesBadges": "Milestones & Badges",
+  "milestonesBadgesDesc": "Achievement and level-up notifications",
+  "trendingStoriesInCity": "Trending Stories in My City",
+  "trendingStoriesDesc": "When stories in your city are trending",
+  "communityActivity": "Community Activity",
+  "communityActivityDesc": "Confirmations on your stories",
+  "language": "Language",
+  "english": "English",
+  "hindi": "Hindi",
+  "defaultLanguage": "Default language",
+  "appVersion": "Mai Bhi Editor v1.0.0",
+
+  "onboardingWelcomeTitle": "Welcome to News By You",
+  "onboardingWelcomeDesc": "Become a citizen journalist! Report local news from your city and share stories that matter to your community.",
+  "onboardingAiTitle": "AI Assists Your Writing",
+  "onboardingAiDesc": "Our AI tool helps rephrase and structure your reports for clarity and readability. Write naturally and let AI polish it.",
+  "onboardingEditorsTitle": "Editors Verify",
+  "onboardingEditorsDesc": "Every story goes through HT editorial review before publication. This ensures accuracy and builds trust in citizen journalism.",
+  "onboardingReputationTitle": "Earn Reputation",
+  "onboardingReputationDesc": "Gain points, unlock badges, and level up from Basic Creator to Trusted Reporter. Your credibility grows with every published story.",
+  "skip": "Skip",
+  "next": "Next",
+  "getStarted": "Get Started",
+  "acceptAndContinue": "Accept & Continue",
+  "guidelinesCheckbox": "I agree to the Community Guidelines and will report responsibly",
+  "pleaseAcceptGuidelines": "Please accept the community guidelines to continue",
+
+  "basicCreator": "Basic Creator",
+  "htApprovedCreator": "HT Approved Creator",
+  "trustedReporter": "Trusted Reporter",
+
+  "mySubmissions": "My Submissions",
+  "aiPreview": "AI Preview",
+  "kycUpload": "KYC Verification",
+  "creatorProfileTitle": "Creator Profile",
+
+  "pageNotFound": "Page not found: {uri}",
+  "@pageNotFound": {
+    "placeholders": {
+      "uri": { "type": "String" }
+    }
+  }
+}
