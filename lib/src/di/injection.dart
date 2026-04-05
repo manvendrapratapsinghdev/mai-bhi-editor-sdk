@@ -1,9 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 
 import '../core/analytics/analytics_service.dart';
-import '../core/network/auth_interceptor.dart';
 import '../network/api_client.dart';
 
 // ── Feed ────────────────────────────────────────────────────────────────
@@ -96,9 +94,6 @@ final GetIt sl = GetIt.asNewInstance();
 Future<void> registerSdkDependencies() async {
   // ── External / Core ──────────────────────────────────────────────────
   sl.registerLazySingleton<Dio>(() => MbeApiClient.instance);
-  sl.registerLazySingleton<FlutterSecureStorage>(
-      () => const FlutterSecureStorage());
-  sl.registerLazySingleton<AuthInterceptor>(() => AuthInterceptor());
 
   // ── Analytics ────────────────────────────────────────────────────────
   sl.registerLazySingleton<AnalyticsService>(() => AnalyticsService(sl()));

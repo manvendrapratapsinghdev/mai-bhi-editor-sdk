@@ -5,11 +5,27 @@ import 'auth_status.dart';
 /// The SDK never stores tokens or manages login itself. All authentication
 /// is delegated to the host app via this interface.
 ///
+/// ## Auth header contract
+///
+/// On every outbound HTTP request the SDK calls [getAuthHeaders] and
+/// forwards the returned map verbatim. The host app is expected to return
+/// the Hindustan Times auth triple:
+///
+/// ```
+/// Authorization: <ht_user_token>   // raw HT token, NOT "Bearer ..."
+/// X-Client:      1006
+/// X-Platform:    Android | iOS
+/// ```
+///
+/// If the user is not authenticated, return an empty map.
+///
+/// The SDK never attempts to refresh tokens. On a 401 response it calls
+/// [requestLogin] so the host can re-acquire a token from the HT app.
+///
 /// ## Example Implementation
 ///
 /// ```dart
 /// class MyAuthProvider implements AuthProvider {
-///   final FlutterSecureStorage _storage;
 ///   final _statusController = StreamController<AuthStatus>.broadcast();
 ///   AuthStatus _authStatus = AuthStatus.unknown;
 ///   MbeUser? _currentUser;
@@ -24,24 +40,24 @@ import 'auth_status.dart';
 ///   Stream<AuthStatus> get authStatusStream => _statusController.stream;
 ///
 ///   @override
-///   Future<String?> getAccessToken() async {
-///     return await _storage.read(key: 'access_token');
-///   }
-///
-///   @override
-///   Future<String?> refreshToken() async {
-///     // Call your refresh endpoint, return new access token or null
+///   Future<Map<String, String>> getAuthHeaders() async {
+///     final token = await _readHtToken();
+///     if (token == null || token.isEmpty) return const {};
+///     return {
+///       'Authorization': token,
+///       'X-Client': '1006',
+///       'X-Platform': Platform.isIOS ? 'iOS' : 'Android',
+///     };
 ///   }
 ///
 ///   @override
 ///   Future<bool> requestLogin() async {
-///     // Show your login UI, return true if user logged in successfully
+///     // Hand off to the HT app to re-acquire a token.
 ///     return false;
 ///   }
 ///
 ///   @override
 ///   Future<void> logout() async {
-///     await _storage.deleteAll();
 ///     _authStatus = AuthStatus.unauthenticated;
 ///     _currentUser = null;
 ///     _statusController.add(AuthStatus.unauthenticated);
@@ -49,16 +65,14 @@ import 'auth_status.dart';
 /// }
 /// ```
 abstract class AuthProvider {
-  /// Current access token, or null if unauthenticated.
+  /// Auth headers to attach to every outbound SDK HTTP request.
   ///
-  /// Called by the SDK's Dio interceptor before every API request.
-  Future<String?> getAccessToken();
-
-  /// Attempt to refresh the access token.
+  /// Must return a map containing `Authorization`, `X-Client`, and
+  /// `X-Platform`. Return an empty map if the user is unauthenticated —
+  /// the SDK will still send the request and let the backend reject it.
   ///
-  /// Called when the SDK receives a 401 response. Return the new access
-  /// token on success, or null to trigger [requestLogin].
-  Future<String?> refreshToken();
+  /// The SDK forwards the returned map verbatim; do NOT prepend `Bearer `.
+  Future<Map<String, String>> getAuthHeaders();
 
   /// Current authentication status (synchronous).
   ///
@@ -76,11 +90,10 @@ abstract class AuthProvider {
 
   /// Request the host app to present its login UI.
   ///
-  /// Called when the SDK encounters a 401 that cannot be resolved by
-  /// token refresh, or when the user taps a login-required action.
-  /// Returns `true` if the user successfully logged in, `false` if
-  /// the login was cancelled or failed. The SDK uses this to resume
-  /// the interrupted action on success.
+  /// Called when the SDK receives a 401, or when the user taps a
+  /// login-required action. The host is expected to re-acquire a token
+  /// from the HT app. Returns `true` if the user is now authenticated,
+  /// `false` if the login was cancelled or failed.
   Future<bool> requestLogin();
 
   /// Request the host app to log the user out.

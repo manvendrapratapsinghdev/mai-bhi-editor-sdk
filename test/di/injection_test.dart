@@ -7,11 +7,6 @@ import 'package:mai_bhi_editor_sdk/src/di/injection.dart';
 import 'package:mai_bhi_editor_sdk/src/features/admin/data/datasources/admin_remote_datasource.dart';
 import 'package:mai_bhi_editor_sdk/src/features/admin/domain/repositories/admin_repository.dart';
 import 'package:mai_bhi_editor_sdk/src/features/admin/presentation/bloc/admin_bloc.dart';
-import 'package:mai_bhi_editor_sdk/src/features/auth/data/datasources/auth_local_datasource.dart';
-import 'package:mai_bhi_editor_sdk/src/features/auth/data/datasources/auth_remote_datasource.dart';
-import 'package:mai_bhi_editor_sdk/src/features/auth/domain/repositories/auth_repository.dart';
-import 'package:mai_bhi_editor_sdk/src/features/auth/domain/usecases/get_profile_usecase.dart';
-import 'package:mai_bhi_editor_sdk/src/features/auth/domain/usecases/login_usecase.dart';
 import 'package:mai_bhi_editor_sdk/src/features/community/data/datasources/community_remote_datasource.dart';
 import 'package:mai_bhi_editor_sdk/src/features/community/domain/repositories/community_repository.dart';
 import 'package:mai_bhi_editor_sdk/src/features/community/domain/usecases/block_creator_usecase.dart';
@@ -63,13 +58,10 @@ class _FakeAuthProvider implements AuthProvider {
   Stream<AuthStatus> get authStatusStream => const Stream.empty();
 
   @override
-  Future<String?> getAccessToken() async => null;
+  Future<Map<String, String>> getAuthHeaders() async => const {};
 
   @override
-  Future<String?> refreshToken() async => null;
-
-  @override
-  Future<void> requestLogin() async {}
+  Future<bool> requestLogin() async => false;
 
   @override
   Future<void> logout() async {}
@@ -137,13 +129,6 @@ void main() {
       expect(() => sl<NotificationRemoteDataSource>(), returnsNormally);
       expect(() => sl<GetNotificationsUseCase>(), returnsNormally);
       expect(() => sl<RegisterDeviceUseCase>(), returnsNormally);
-
-      // Auth
-      expect(() => sl<AuthRepository>(), returnsNormally);
-      expect(() => sl<AuthRemoteDataSource>(), returnsNormally);
-      expect(() => sl<AuthLocalDataSource>(), returnsNormally);
-      expect(() => sl<LoginUseCase>(), returnsNormally);
-      expect(() => sl<GetProfileUseCase>(), returnsNormally);
 
       // Admin
       expect(() => sl<AdminRepository>(), returnsNormally);

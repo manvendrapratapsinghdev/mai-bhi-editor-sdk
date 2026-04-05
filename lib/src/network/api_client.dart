@@ -38,7 +38,6 @@ class MbeApiClient {
 
     _authInterceptor = MbeAuthInterceptor(
       authProvider: authProvider,
-      dio: _dio!,
     );
 
     _dio!.interceptors.addAll([
