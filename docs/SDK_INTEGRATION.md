@@ -538,11 +538,12 @@ flutter run --dart-define=HT_USER_TOKEN=dev:ht-seed-admin
 // lib/core/constants/api_constants.dart
 class ApiConstants {
   static const String devBaseUrl  = 'http://localhost:8000/api/v1';
+  static const String ngrokBaseUrl = 'https://schedular-lennox-nonpermissible.ngrok-free.dev/api/v1';
   static const String prodBaseUrl = 'https://api.maibhieditor.ht.com/v1';
 
   // Toggle via --dart-define=API_ENV=prod or a flavor config
   static const String _env = String.fromEnvironment('API_ENV', defaultValue: 'dev');
-  static String get baseUrl => _env == 'prod' ? prodBaseUrl : devBaseUrl;
+  static String get baseUrl => _env == 'prod' ? prodBaseUrl : ngrokBaseUrl;
 }
 ```
 
