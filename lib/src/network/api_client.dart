@@ -20,6 +20,7 @@ class MbeApiClient {
     Duration connectTimeout = const Duration(seconds: 15),
     Duration receiveTimeout = const Duration(seconds: 15),
     Duration sendTimeout = const Duration(seconds: 30),
+    Map<String, String> extraHeaders = const {},
   }) {
     if (_dio != null) return _dio!;
 
@@ -32,6 +33,7 @@ class MbeApiClient {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
+          ...extraHeaders,
         },
       ),
     );

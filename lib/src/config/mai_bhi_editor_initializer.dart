@@ -51,6 +51,7 @@ class MaiBhiEditor {
     Duration sendTimeout = const Duration(seconds: 30),
     bool enableAnalytics = true,
     List<String>? cities,
+    Map<String, String> extraHeaders = const {},
   }) async {
     if (_initialized) return;
 
@@ -72,6 +73,7 @@ class MaiBhiEditor {
       connectTimeout: connectTimeout,
       receiveTimeout: receiveTimeout,
       sendTimeout: sendTimeout,
+      extraHeaders: extraHeaders,
     );
 
     // Register package-scoped DI dependencies.
