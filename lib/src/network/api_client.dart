@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 
 import '../auth/auth_provider.dart';
 import 'error_mapping_interceptor.dart';
@@ -14,6 +17,10 @@ class MbeApiClient {
   static MbeAuthInterceptor? _authInterceptor;
 
   /// Initialise the API client. Call once during SDK bootstrap.
+  ///
+  /// Set [bypassSslVerification] to `true` only in debug/dev builds when
+  /// using a self-signed tunnel (e.g. ngrok free tier). Never use in
+  /// production — it disables certificate validation entirely.
   static Dio init({
     required String baseUrl,
     required AuthProvider authProvider,
@@ -21,6 +28,7 @@ class MbeApiClient {
     Duration receiveTimeout = const Duration(seconds: 15),
     Duration sendTimeout = const Duration(seconds: 30),
     Map<String, String> extraHeaders = const {},
+    bool bypassSslVerification = false,
   }) {
     if (_dio != null) return _dio!;
 
@@ -37,6 +45,15 @@ class MbeApiClient {
         },
       ),
     );
+
+    // Bypass SSL verification for self-signed certs in dev (e.g. ngrok).
+    if (bypassSslVerification) {
+      (_dio!.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
+        final client = HttpClient();
+        client.badCertificateCallback = (cert, host, port) => true;
+        return client;
+      };
+    }
 
     _authInterceptor = MbeAuthInterceptor(
       authProvider: authProvider,

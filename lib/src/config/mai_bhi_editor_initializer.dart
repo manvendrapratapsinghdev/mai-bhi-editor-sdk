@@ -52,6 +52,7 @@ class MaiBhiEditor {
     bool enableAnalytics = true,
     List<String>? cities,
     Map<String, String> extraHeaders = const {},
+    bool bypassSslVerification = false,
   }) async {
     if (_initialized) return;
 
@@ -74,6 +75,7 @@ class MaiBhiEditor {
       receiveTimeout: receiveTimeout,
       sendTimeout: sendTimeout,
       extraHeaders: extraHeaders,
+      bypassSslVerification: bypassSslVerification,
     );
 
     // Register package-scoped DI dependencies.
