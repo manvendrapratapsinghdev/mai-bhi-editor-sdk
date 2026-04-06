@@ -65,6 +65,8 @@ class MaiBhiEditor {
       sendTimeout: sendTimeout,
       enableAnalytics: enableAnalytics,
       cities: cities ?? kIndianCities,
+      additionalHeaders: extraHeaders,
+      bypassSslVerification: bypassSslVerification,
     );
 
     // Initialize the HTTP client.

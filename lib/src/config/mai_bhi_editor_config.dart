@@ -30,6 +30,12 @@ class MaiBhiEditorConfig {
   /// Defaults to [kIndianCities] if not provided.
   final List<String> cities;
 
+  /// Extra HTTP headers merged into every SDK request.
+  final Map<String, String> additionalHeaders;
+
+  /// Allow self-signed SSL certificates. Dev/test only — never use in production.
+  final bool bypassSslVerification;
+
   const MaiBhiEditorConfig({
     required this.baseUrl,
     required this.authProvider,
@@ -39,5 +45,7 @@ class MaiBhiEditorConfig {
     this.sendTimeout = const Duration(seconds: 30),
     this.enableAnalytics = true,
     this.cities = kIndianCities,
+    this.additionalHeaders = const {},
+    this.bypassSslVerification = false,
   });
 }

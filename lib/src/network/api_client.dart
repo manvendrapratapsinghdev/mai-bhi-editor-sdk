@@ -8,8 +8,6 @@ import 'error_mapping_interceptor.dart';
 import 'mbe_auth_interceptor.dart';
 
 /// Factory that produces a configured [Dio] instance for the SDK.
-///
-/// Uses the host-provided [baseUrl] and [AuthProvider] for authentication.
 class MbeApiClient {
   MbeApiClient._();
 
@@ -46,7 +44,6 @@ class MbeApiClient {
       ),
     );
 
-    // Bypass SSL verification for self-signed certs in dev (e.g. ngrok).
     if (bypassSslVerification) {
       (_dio!.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
         final client = HttpClient();
@@ -55,9 +52,7 @@ class MbeApiClient {
       };
     }
 
-    _authInterceptor = MbeAuthInterceptor(
-      authProvider: authProvider,
-    );
+    _authInterceptor = MbeAuthInterceptor(authProvider: authProvider);
 
     _dio!.interceptors.addAll([
       _authInterceptor!,
@@ -78,7 +73,6 @@ class MbeApiClient {
     return _dio!;
   }
 
-  /// Return the existing instance (must call [init] first).
   static Dio get instance {
     if (_dio == null) {
       throw StateError('MbeApiClient.init() has not been called. '
@@ -87,7 +81,6 @@ class MbeApiClient {
     return _dio!;
   }
 
-  /// Reset for testing.
   static void reset() {
     _dio = null;
     _authInterceptor = null;
