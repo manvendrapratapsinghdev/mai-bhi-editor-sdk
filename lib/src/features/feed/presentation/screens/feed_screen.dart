@@ -13,6 +13,8 @@ import '../bloc/feed_bloc.dart';
 import '../widgets/city_filter_sheet.dart';
 import '../widgets/city_prompt_sheet.dart';
 import '../widgets/story_card.dart';
+import '../../../../core/widgets/skeleton_loaders.dart';
+import '../../../../core/widgets/staggered_list_item.dart';
 import '../../../../di/injection.dart';
 
 /// Main news feed screen ("News By You").
@@ -348,7 +350,7 @@ class _FeedScreenState extends State<FeedScreen> {
 
     // Loading state.
     if (state.isLoading && state.stories.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      return const FeedSkeletonLoader();
     }
 
     // Trending empty state.
@@ -378,9 +380,12 @@ class _FeedScreenState extends State<FeedScreen> {
               ),
             );
           }
-          return StoryCard(
-            story: state.stories[index],
-            showTrendingBadge: state.isTrending,
+          return StaggeredListItem(
+            index: index,
+            child: StoryCard(
+              story: state.stories[index],
+              showTrendingBadge: state.isTrending,
+            ),
           );
         },
       ),
@@ -404,7 +409,10 @@ class _FeedScreenState extends State<FeedScreen> {
       padding: const EdgeInsets.only(top: 8, bottom: 80),
       itemCount: state.searchResults.length,
       itemBuilder: (context, index) {
-        return StoryCard(story: state.searchResults[index]);
+        return StaggeredListItem(
+          index: index,
+          child: StoryCard(story: state.searchResults[index]),
+        );
       },
     );
   }

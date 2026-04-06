@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/notifications/fcm_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/skeleton_loaders.dart';
 import '../../domain/entities/notification_entity.dart';
 import '../bloc/notification_bloc.dart';
 import '../widgets/notification_tile.dart';
@@ -116,7 +117,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
           // Loading initial data.
           if (state.isLoading && state.notifications.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
+            return const NotificationListSkeleton();
           }
 
           // Empty state.

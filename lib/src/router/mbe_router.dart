@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../auth/auth_status.dart';
 import '../config/mai_bhi_editor_initializer.dart';
 import 'mbe_routes.dart';
+import 'mbe_page_transitions.dart';
 import 'mbe_screen_builder.dart';
 
 /// SDK-internal GoRouter with auth guards using [AuthProvider].
@@ -62,9 +63,12 @@ class MbeRouter {
           GoRoute(
             path: ':id',
             name: 'storyDetail',
-            builder: (context, state) {
+            pageBuilder: (context, state) {
               final id = state.pathParameters['id']!;
-              return MbeScreens.storyDetail(id);
+              return slideTransitionPage(
+                state: state,
+                child: MbeScreens.storyDetail(id),
+              );
             },
           ),
         ],
@@ -84,24 +88,33 @@ class MbeRouter {
       GoRoute(
         path: MbeRoutes.submit,
         name: 'submit',
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final draftId = state.uri.queryParameters['draftId'];
-          return MbeScreens.submissionForm(draftId: draftId);
+          return slideTransitionPage(
+            state: state,
+            child: MbeScreens.submissionForm(draftId: draftId),
+          );
         },
       ),
       GoRoute(
         path: MbeRoutes.mySubmissions,
         name: 'mySubmissions',
-        builder: (context, state) => MbeScreens.mySubmissions(),
+        pageBuilder: (context, state) => slideTransitionPage(
+          state: state,
+          child: MbeScreens.mySubmissions(),
+        ),
       ),
 
       // ── AI Preview ────────────────────────────────────────────────
       GoRoute(
         path: MbeRoutes.aiPreview,
         name: 'aiPreview',
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final id = state.pathParameters['id']!;
-          return MbeScreens.aiPreview(id);
+          return slideTransitionPage(
+            state: state,
+            child: MbeScreens.aiPreview(id),
+          );
         },
       ),
 
@@ -109,14 +122,20 @@ class MbeRouter {
       GoRoute(
         path: MbeRoutes.editorialQueue,
         name: 'editorialQueue',
-        builder: (context, state) => MbeScreens.editorialQueue(),
+        pageBuilder: (context, state) => slideTransitionPage(
+          state: state,
+          child: MbeScreens.editorialQueue(),
+        ),
         routes: [
           GoRoute(
             path: ':id',
             name: 'editorialReview',
-            builder: (context, state) {
+            pageBuilder: (context, state) {
               final id = state.pathParameters['id']!;
-              return MbeScreens.editorialReview(id);
+              return slideTransitionPage(
+                state: state,
+                child: MbeScreens.editorialReview(id),
+              );
             },
           ),
         ],
@@ -126,30 +145,42 @@ class MbeRouter {
       GoRoute(
         path: MbeRoutes.editorAnalytics,
         name: 'editorAnalytics',
-        builder: (context, state) => MbeScreens.editorAnalytics(),
+        pageBuilder: (context, state) => slideTransitionPage(
+          state: state,
+          child: MbeScreens.editorAnalytics(),
+        ),
       ),
 
       // ── Profile ─────────────────────────────────────────────────────
       GoRoute(
         path: MbeRoutes.profile,
         name: 'profile',
-        builder: (context, state) => MbeScreens.profile(),
+        pageBuilder: (context, state) => slideTransitionPage(
+          state: state,
+          child: MbeScreens.profile(),
+        ),
       ),
 
       // ── KYC ─────────────────────────────────────────────────────────
       GoRoute(
         path: MbeRoutes.kycUpload,
         name: 'kycUpload',
-        builder: (context, state) => MbeScreens.kycUpload(),
+        pageBuilder: (context, state) => slideTransitionPage(
+          state: state,
+          child: MbeScreens.kycUpload(),
+        ),
       ),
 
       // ── Creator public profile ──────────────────────────────────────
       GoRoute(
         path: MbeRoutes.creatorProfile,
         name: 'creatorProfile',
-        builder: (context, state) {
+        pageBuilder: (context, state) {
           final id = state.pathParameters['id']!;
-          return MbeScreens.creatorProfile(id);
+          return slideTransitionPage(
+            state: state,
+            child: MbeScreens.creatorProfile(id),
+          );
         },
       ),
 
@@ -157,49 +188,70 @@ class MbeRouter {
       GoRoute(
         path: MbeRoutes.blockedCreators,
         name: 'blockedCreators',
-        builder: (context, state) => MbeScreens.blockedCreators(),
+        pageBuilder: (context, state) => slideTransitionPage(
+          state: state,
+          child: MbeScreens.blockedCreators(),
+        ),
       ),
 
       // ── Notifications ──────────────────────────────────────────
       GoRoute(
         path: MbeRoutes.notifications,
         name: 'notifications',
-        builder: (context, state) => MbeScreens.notifications(),
+        pageBuilder: (context, state) => slideTransitionPage(
+          state: state,
+          child: MbeScreens.notifications(),
+        ),
       ),
 
       // ── Settings ───────────────────────────────────────────────
       GoRoute(
         path: MbeRoutes.settings,
         name: 'settings',
-        builder: (context, state) => MbeScreens.settings(),
+        pageBuilder: (context, state) => slideTransitionPage(
+          state: state,
+          child: MbeScreens.settings(),
+        ),
       ),
 
       // ── Onboarding ─────────────────────────────────────────────
       GoRoute(
         path: MbeRoutes.onboarding,
         name: 'onboarding',
-        builder: (context, state) => MbeScreens.onboarding(),
+        pageBuilder: (context, state) => slideTransitionPage(
+          state: state,
+          child: MbeScreens.onboarding(),
+        ),
       ),
 
       // ── Admin Dashboard ────────────────────────────────────────
       GoRoute(
         path: MbeRoutes.adminDashboard,
         name: 'adminDashboard',
-        builder: (context, state) => MbeScreens.adminDashboard(),
+        pageBuilder: (context, state) => slideTransitionPage(
+          state: state,
+          child: MbeScreens.adminDashboard(),
+        ),
       ),
 
       // ── Admin Reports ──────────────────────────────────────────
       GoRoute(
         path: MbeRoutes.adminReports,
         name: 'adminReports',
-        builder: (context, state) => MbeScreens.adminReports(),
+        pageBuilder: (context, state) => slideTransitionPage(
+          state: state,
+          child: MbeScreens.adminReports(),
+        ),
       ),
 
       // ── Admin Users ────────────────────────────────────────────
       GoRoute(
         path: MbeRoutes.adminUsers,
         name: 'adminUsers',
-        builder: (context, state) => MbeScreens.adminUsers(),
+        pageBuilder: (context, state) => slideTransitionPage(
+          state: state,
+          child: MbeScreens.adminUsers(),
+        ),
       ),
     ],
 

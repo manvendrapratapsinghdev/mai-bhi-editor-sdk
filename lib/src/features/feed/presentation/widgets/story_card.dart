@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/relative_time.dart';
+import '../../../../core/widgets/shimmer_widget.dart';
 import '../../../auth/domain/entities/user.dart';
 import '../../../../auth/auth_status.dart';
 import '../../../../config/mai_bhi_editor_initializer.dart';
@@ -152,6 +153,8 @@ class _StoryCardState extends State<StoryCard> with TickerProviderStateMixin {
     widget.onConfirm?.call();
   }
 
+  static const _cardRadius = 16.0;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -159,131 +162,123 @@ class _StoryCardState extends State<StoryCard> with TickerProviderStateMixin {
     return Semantics(
       label:
           '${widget.story.title} by ${widget.story.creatorName ?? "Anonymous"}${widget.showTrendingBadge ? ", trending" : ""}',
-      child: Card(
-        child: InkWell(
-          onTap: () => context.push('/feed/${widget.story.id}'),
-          borderRadius: BorderRadius.circular(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Cover image with optional trending badge
-              Stack(
-                children: [
-                  _CoverImage(imageUrl: widget.story.coverImageUrl),
-                  if (widget.showTrendingBadge)
-                    Positioned(
-                      top: 8,
-                      left: 8,
-                      child: Semantics(
-                        label: 'Trending story',
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.orange.withValues(alpha: 0.9),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.local_fire_department,
-                                size: 14,
-                                color: Colors.white,
-                              ),
-                              SizedBox(width: 4),
-                              Text(
-                                'Trending',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-
-              Padding(
-                padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Title
-                    Text(
-                      widget.story.title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  const SizedBox(height: 8),
-
-                  // Creator row
-                  _CreatorRow(
-                    creatorName: widget.story.creatorName,
-                    creatorLevel: widget.story.creatorLevel,
-                  ),
-                  const SizedBox(height: 10),
-
-                  // Stats + actions row
-                  Row(
-                    children: [
-                      // Like button/count
-                      _InteractiveLikeChip(
-                        isLiked: _isLiked,
-                        count: _likesCount,
-                        scaleAnimation: _likeScale,
-                        onTap: widget.onLike != null ? _onLikeTap : null,
-                      ),
-                      const SizedBox(width: 12),
-
-                      // Confirmation count
-                      _StatChip(
-                        icon: Icons.check_circle_outline,
-                        count: _confirmationsCount,
-                        color: AppColors.statusPublished,
-                        semanticLabel:
-                            '$_confirmationsCount confirmations',
-                      ),
-
-                      const Spacer(),
-
-                      // Confirm button
-                      if (widget.onConfirm != null)
-                        _ConfirmButton(
-                          isConfirmed: _isConfirmed,
-                          onPressed: _onConfirmTap,
-                          scaleAnimation: _confirmScale,
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-
-                  // City tag + time row
-                  Row(
-                    children: [
-                      if (widget.story.city != null &&
-                          widget.story.city!.isNotEmpty)
-                        _CityChip(city: widget.story.city!),
-                      const Spacer(),
-                      Text(
-                        formatRelativeTime(widget.story.publishedAt),
-                        style: theme.textTheme.bodySmall,
-                      ),
-                    ],
-                  ),
-                  ],
-                ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        child: Container(
+          decoration: BoxDecoration(
+            color: theme.cardColor,
+            borderRadius: BorderRadius.circular(_cardRadius),
+            border: Border.all(
+              color: AppColors.divider.withValues(alpha: 0.5),
+              width: 0.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadow,
+                blurRadius: 6,
+                offset: const Offset(0, 2),
               ),
             ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(_cardRadius),
+            child: InkWell(
+              onTap: () => context.push('/feed/${widget.story.id}'),
+              borderRadius: BorderRadius.circular(_cardRadius),
+              splashColor: AppColors.primary.withValues(alpha: 0.08),
+              highlightColor: AppColors.primary.withValues(alpha: 0.04),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Cover image with gradient overlay + trending badge
+                  _CoverImage(
+                    imageUrl: widget.story.coverImageUrl,
+                    showTrendingBadge: widget.showTrendingBadge,
+                    borderRadius: _cardRadius,
+                  ),
+
+                  // Content area
+                  Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Title
+                        Text(
+                          widget.story.title,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            height: 1.3,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+
+                        // Creator row
+                        _CreatorRow(
+                          creatorName: widget.story.creatorName,
+                          creatorLevel: widget.story.creatorLevel,
+                        ),
+                        const SizedBox(height: 10),
+
+                        // Stats + actions row
+                        Row(
+                          children: [
+                            // Like button/count
+                            _InteractiveLikeChip(
+                              isLiked: _isLiked,
+                              count: _likesCount,
+                              scaleAnimation: _likeScale,
+                              onTap:
+                                  widget.onLike != null ? _onLikeTap : null,
+                            ),
+                            const SizedBox(width: 8),
+
+                            // Confirmation count
+                            _StatChip(
+                              icon: Icons.check_circle_outline,
+                              count: _confirmationsCount,
+                              color: AppColors.statusPublished,
+                              semanticLabel:
+                                  '$_confirmationsCount confirmations',
+                            ),
+
+                            const Spacer(),
+
+                            // Confirm button
+                            if (widget.onConfirm != null)
+                              _ConfirmButton(
+                                isConfirmed: _isConfirmed,
+                                onPressed: _onConfirmTap,
+                                scaleAnimation: _confirmScale,
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 8),
+
+                        // City tag + time row
+                        Row(
+                          children: [
+                            if (widget.story.city != null &&
+                                widget.story.city!.isNotEmpty)
+                              _CityChip(city: widget.story.city!),
+                            const Spacer(),
+                            Text(
+                              formatRelativeTime(widget.story.publishedAt),
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: AppColors.mediumGrey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -291,60 +286,164 @@ class _StoryCardState extends State<StoryCard> with TickerProviderStateMixin {
   }
 }
 
-// Cover image with caching and placeholder
+// Cover image with caching, shimmer placeholder, gradient overlay, and trending badge
 class _CoverImage extends StatelessWidget {
   final String? imageUrl;
+  final bool showTrendingBadge;
+  final double borderRadius;
 
-  const _CoverImage({required this.imageUrl});
+  const _CoverImage({
+    required this.imageUrl,
+    required this.showTrendingBadge,
+    required this.borderRadius,
+  });
 
   @override
   Widget build(BuildContext context) {
     final resolvedUrl = ApiConstants.resolveImageUrl(imageUrl);
-    if (resolvedUrl.isEmpty) {
-      return ExcludeSemantics(
-        child: Container(
-          height: 180,
-          width: double.infinity,
-          color: AppColors.extraLightGrey,
-          child: const Center(
-            child: Icon(
-              Icons.article_outlined,
-              size: 48,
-              color: AppColors.lightGrey,
-            ),
-          ),
-        ),
-      );
-    }
 
-    return Semantics(
-      image: true,
-      label: 'Story cover image',
-      child: CachedNetworkImage(
-        imageUrl: resolvedUrl,
-        height: 180,
-        width: double.infinity,
-        fit: BoxFit.cover,
-        placeholder: (context, url) => Container(
-          height: 180,
-          width: double.infinity,
-          color: AppColors.extraLightGrey,
-          child: const Center(
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-        ),
-        errorWidget: (context, url, error) => Container(
-          height: 180,
-          width: double.infinity,
-          color: AppColors.extraLightGrey,
-          child: const Center(
-            child: Icon(
-              Icons.broken_image_outlined,
-              size: 48,
-              color: AppColors.lightGrey,
+    return ClipRRect(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(borderRadius),
+        topRight: Radius.circular(borderRadius),
+      ),
+      child: Stack(
+        children: [
+          // Image or placeholder
+          if (resolvedUrl.isEmpty)
+            ExcludeSemantics(
+              child: Container(
+                height: 180,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.extraLightGrey,
+                      AppColors.lightGrey,
+                    ],
+                  ),
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.article_outlined,
+                    size: 48,
+                    color: AppColors.mediumGrey,
+                  ),
+                ),
+              ),
+            )
+          else
+            Semantics(
+              image: true,
+              label: 'Story cover image',
+              child: CachedNetworkImage(
+                imageUrl: resolvedUrl,
+                height: 180,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                fadeInDuration: const Duration(milliseconds: 300),
+                placeholder: (context, url) => ShimmerEffect(
+                  child: Container(
+                    height: 180,
+                    width: double.infinity,
+                    color: AppColors.extraLightGrey,
+                  ),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  height: 180,
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        AppColors.extraLightGrey,
+                        AppColors.lightGrey,
+                      ],
+                    ),
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.broken_image_outlined,
+                      size: 40,
+                      color: AppColors.mediumGrey,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+          // Bottom gradient overlay for badge readability
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 60,
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.black26],
+                  ),
+                ),
+                child: const SizedBox.expand(),
+              ),
             ),
           ),
-        ),
+
+          // Trending badge (top-right)
+          if (showTrendingBadge)
+            Positioned(
+              top: 8,
+              right: 8,
+              child: Semantics(
+                label: 'Trending story',
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFFF8C00), Color(0xFFFF5722)],
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.orange.withValues(alpha: 0.3),
+                        blurRadius: 4,
+                        offset: const Offset(0, 1),
+                      ),
+                    ],
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.local_fire_department,
+                        size: 13,
+                        color: Colors.white,
+                      ),
+                      SizedBox(width: 3),
+                      Text(
+                        'Trending',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -369,8 +468,8 @@ class _CreatorRow extends StatelessWidget {
       children: [
         Icon(
           Icons.person_outline,
-          size: 16,
-          color: theme.textTheme.bodySmall?.color,
+          size: 14,
+          color: AppColors.mediumGrey,
         ),
         const SizedBox(width: 4),
         Flexible(
@@ -378,6 +477,7 @@ class _CreatorRow extends StatelessWidget {
             creatorName ?? 'Anonymous',
             style: theme.textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.w500,
+              color: AppColors.darkGrey,
             ),
             overflow: TextOverflow.ellipsis,
           ),
@@ -409,7 +509,7 @@ class _CreatorRow extends StatelessWidget {
   }
 }
 
-// Interactive like chip with tap and scale animation
+// Interactive like chip with tap, scale animation, and color transition
 class _InteractiveLikeChip extends StatelessWidget {
   final bool isLiked;
   final int count;
@@ -425,8 +525,10 @@ class _InteractiveLikeChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final activeColor = const Color(0xFFE53935);
+    final inactiveColor = AppColors.mediumGrey;
+    final color = isLiked ? activeColor : inactiveColor;
     final icon = isLiked ? Icons.favorite : Icons.favorite_border;
-    final color = isLiked ? AppColors.primaryRed : AppColors.primaryRed;
 
     return GestureDetector(
       onTap: onTap,
@@ -441,29 +543,41 @@ class _InteractiveLikeChip extends StatelessWidget {
         child: Semantics(
           label: '$count likes',
           button: onTap != null,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
-                transitionBuilder: (child, anim) =>
-                    ScaleTransition(scale: anim, child: child),
-                child: Icon(
-                  icon,
-                  key: ValueKey(isLiked),
-                  size: 16,
-                  color: color,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: isLiked
+                  ? activeColor.withValues(alpha: 0.08)
+                  : AppColors.extraLightGrey,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder: (child, anim) =>
+                      ScaleTransition(scale: anim, child: child),
+                  child: Icon(
+                    icon,
+                    key: ValueKey(isLiked),
+                    size: 14,
+                    color: color,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 4),
-              Text(
-                _formatCount(count),
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: color,
-                      fontWeight: FontWeight.w600,
-                    ),
-              ),
-            ],
+                const SizedBox(width: 4),
+                AnimatedDefaultTextStyle(
+                  duration: const Duration(milliseconds: 200),
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: color,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 12,
+                      ),
+                  child: Text(_formatCount(count)),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -477,7 +591,7 @@ class _InteractiveLikeChip extends StatelessWidget {
   }
 }
 
-// Stat chip (confirmations)
+// Stat chip (confirmations) in pill shape
 class _StatChip extends StatelessWidget {
   final IconData icon;
   final int count;
@@ -495,19 +609,27 @@ class _StatChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Semantics(
       label: semanticLabel,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: color),
-          const SizedBox(width: 4),
-          Text(
-            _formatCount(count),
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: color,
-                  fontWeight: FontWeight.w600,
-                ),
-          ),
-        ],
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: AppColors.extraLightGrey,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 14, color: color),
+            const SizedBox(width: 4),
+            Text(
+              _formatCount(count),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: color,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                  ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -519,7 +641,7 @@ class _StatChip extends StatelessWidget {
   }
 }
 
-// City chip
+// City chip with location icon
 class _CityChip extends StatelessWidget {
   final String city;
 
@@ -551,7 +673,7 @@ class _CityChip extends StatelessWidget {
   }
 }
 
-// Confirm button with scale animation
+// Confirm button with scale animation and color transition
 class _ConfirmButton extends StatelessWidget {
   final bool isConfirmed;
   final VoidCallback onPressed;
@@ -575,35 +697,49 @@ class _ConfirmButton extends StatelessWidget {
       },
       child: SizedBox(
         height: 30,
-        child: isConfirmed
-            ? FilledButton.icon(
-                onPressed: onPressed,
-                icon: const Icon(Icons.check, size: 14),
-                label: const Text('Confirmed'),
-                style: FilledButton.styleFrom(
-                  backgroundColor: AppColors.statusPublished,
-                  foregroundColor: AppColors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  textStyle: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w600),
-                  minimumSize: Size.zero,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          transitionBuilder: (child, anim) => FadeTransition(
+            opacity: anim,
+            child: ScaleTransition(scale: anim, child: child),
+          ),
+          child: isConfirmed
+              ? FilledButton.icon(
+                  key: const ValueKey('confirmed'),
+                  onPressed: onPressed,
+                  icon: const Icon(Icons.check, size: 14),
+                  label: const Text('Confirmed'),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: AppColors.statusPublished,
+                    foregroundColor: AppColors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    textStyle: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w600),
+                    minimumSize: Size.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                )
+              : OutlinedButton.icon(
+                  key: const ValueKey('unconfirmed'),
+                  onPressed: onPressed,
+                  icon: const Icon(Icons.check_circle_outline, size: 14),
+                  label: const Text('Confirm'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.statusPublished,
+                    side: const BorderSide(color: AppColors.statusPublished),
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    textStyle: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.w600),
+                    minimumSize: Size.zero,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
                 ),
-              )
-            : OutlinedButton.icon(
-                onPressed: onPressed,
-                icon: const Icon(Icons.check_circle_outline, size: 14),
-                label: const Text('Confirm'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.statusPublished,
-                  side: const BorderSide(color: AppColors.statusPublished),
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  textStyle: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.w600),
-                  minimumSize: Size.zero,
-                ),
-              ),
+        ),
       ),
     );
   }
 }
-

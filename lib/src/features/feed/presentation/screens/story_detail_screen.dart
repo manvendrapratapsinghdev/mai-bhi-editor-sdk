@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/widgets/skeleton_loaders.dart';
 import '../../../../core/utils/relative_time.dart';
 import '../../../../di/injection.dart';
 import '../../../../auth/auth_status.dart';
@@ -90,7 +91,7 @@ class _StoryDetailScreenState extends State<StoryDetailScreen> {
       body: BlocBuilder<StoryDetailBloc, StoryDetailState>(
         builder: (context, state) {
           if (state.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const StoryDetailSkeleton();
           }
 
           if (state.errorMessage != null && state.story == null) {
