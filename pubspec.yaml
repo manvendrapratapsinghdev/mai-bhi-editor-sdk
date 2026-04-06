@@ -7,7 +7,7 @@ issue_tracker: https://github.com/AskHT/mai-bhi-editor-sdk/issues
 
 environment:
   sdk: ^3.11.3
-  flutter: ">=3.0.0"
+  flutter: ">=3.35.3"
 
 dependencies:
   flutter:
