@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../core/widgets/auth_gate_widget.dart';
 import '../core/widgets/mbe_error_boundary.dart';
 import '../di/injection.dart';
 import '../features/admin/presentation/bloc/admin_bloc.dart';
@@ -54,6 +55,27 @@ class MbeScreens {
   /// Wraps a screen widget with the SDK error boundary.
   static Widget _guarded(Widget child) => MbeErrorBoundary(child: child);
 
+  /// Wraps a screen with error boundary + inline auth gate.
+  ///
+  /// Unlike [_guarded], this shows a sign-in prompt instead of the
+  /// screen content when the user is unauthenticated. Used for personal
+  /// screens (notifications, settings, my-submissions, etc.) that are
+  /// meaningless without a user identity but should not hard-redirect.
+  static Widget _authGated(
+    Widget child, {
+    required String featureTitle,
+    String? featureDescription,
+    IconData icon = Icons.lock_outline,
+  }) =>
+      MbeErrorBoundary(
+        child: AuthGateWidget(
+          featureTitle: featureTitle,
+          featureDescription: featureDescription,
+          icon: icon,
+          child: child,
+        ),
+      );
+
   // ── Feed ────────────────────────────────────────────────────────────
 
   static Widget feed() => _guarded(BlocProvider(
@@ -68,21 +90,38 @@ class MbeScreens {
 
   // ── Submission ──────────────────────────────────────────────────────
 
-  static Widget submissionForm({String? draftId}) => _guarded(BlocProvider(
-        create: (_) => sl<SubmissionFormBloc>(),
-        child: SubmissionFormScreen(draftId: draftId),
-      ));
+  static Widget submissionForm({String? draftId}) => _authGated(
+        BlocProvider(
+          create: (_) => sl<SubmissionFormBloc>(),
+          child: SubmissionFormScreen(draftId: draftId),
+        ),
+        featureTitle: 'Submit a Story',
+        featureDescription:
+            'Sign in to submit your news stories and become a citizen journalist.',
+        icon: Icons.edit_note,
+      );
 
-  static Widget mySubmissions() => _guarded(BlocProvider(
-        create: (_) => sl<MySubmissionsBloc>()..add(const LoadMySubmissions()),
-        child: const MySubmissionsScreen(),
-      ));
+  static Widget mySubmissions() => _authGated(
+        BlocProvider(
+          create: (_) =>
+              sl<MySubmissionsBloc>()..add(const LoadMySubmissions()),
+          child: const MySubmissionsScreen(),
+        ),
+        featureTitle: 'My Submissions',
+        featureDescription: 'Sign in to view your submitted stories.',
+        icon: Icons.article_outlined,
+      );
 
-  static Widget aiPreview(String submissionId) => _guarded(BlocProvider(
-        create: (_) =>
-            sl<AiPreviewBloc>()..add(LoadAiPreview(submissionId)),
-        child: AiPreviewScreen(submissionId: submissionId),
-      ));
+  static Widget aiPreview(String submissionId) => _authGated(
+        BlocProvider(
+          create: (_) =>
+              sl<AiPreviewBloc>()..add(LoadAiPreview(submissionId)),
+          child: AiPreviewScreen(submissionId: submissionId),
+        ),
+        featureTitle: 'AI Preview',
+        featureDescription: 'Sign in to view AI review of your submission.',
+        icon: Icons.smart_toy_outlined,
+      );
 
   // ── Editorial ───────────────────────────────────────────────────────
 
@@ -112,7 +151,13 @@ class MbeScreens {
 
   // ── KYC ─────────────────────────────────────────────────────────────
 
-  static Widget kycUpload() => _guarded(const KycUploadScreen());
+  static Widget kycUpload() => _authGated(
+        const KycUploadScreen(),
+        featureTitle: 'KYC Verification',
+        featureDescription:
+            'Sign in to upload your KYC documents and become an approved creator.',
+        icon: Icons.verified_user_outlined,
+      );
 
   // ── Creator Profile ────────────────────────────────────────────────
 
@@ -121,21 +166,39 @@ class MbeScreens {
         child: CreatorProfileScreen(creatorId: creatorId),
       ));
 
-  static Widget blockedCreators() => _guarded(const BlockedCreatorsScreen());
+  static Widget blockedCreators() => _authGated(
+        const BlockedCreatorsScreen(),
+        featureTitle: 'Blocked Creators',
+        featureDescription: 'Sign in to manage your blocked creators list.',
+        icon: Icons.block,
+      );
 
   // ── Notifications ──────────────────────────────────────────────────
 
-  static Widget notifications() => _guarded(BlocProvider(
-        create: (_) => sl<NotificationBloc>()..add(const LoadNotifications()),
-        child: const NotificationsScreen(),
-      ));
+  static Widget notifications() => _authGated(
+        BlocProvider(
+          create: (_) =>
+              sl<NotificationBloc>()..add(const LoadNotifications()),
+          child: const NotificationsScreen(),
+        ),
+        featureTitle: 'Notifications',
+        featureDescription:
+            'Sign in to see updates about your stories and community activity.',
+        icon: Icons.notifications_outlined,
+      );
 
   // ── Settings ───────────────────────────────────────────────────────
 
-  static Widget settings() => _guarded(BlocProvider(
-        create: (_) => sl<SettingsBloc>()..add(const LoadSettings()),
-        child: const SettingsScreen(),
-      ));
+  static Widget settings() => _authGated(
+        BlocProvider(
+          create: (_) => sl<SettingsBloc>()..add(const LoadSettings()),
+          child: const SettingsScreen(),
+        ),
+        featureTitle: 'Settings',
+        featureDescription:
+            'Sign in to manage your notification preferences and account.',
+        icon: Icons.settings_outlined,
+      );
 
   // ── Onboarding ─────────────────────────────────────────────────────
 

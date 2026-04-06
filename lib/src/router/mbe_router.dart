@@ -18,14 +18,17 @@ class MbeRouter {
   static final GlobalKey<NavigatorState> rootNavigatorKey =
       GlobalKey<NavigatorState>(debugLabel: 'mbe_root');
 
-  /// Routes that don't require authentication.
-  static const _publicRoutes = <String>{
-    '/onboarding',
-    '/feed',
+  /// Routes that require hard redirect when unauthenticated.
+  ///
+  /// Editorial routes require an editor role; admin routes require admin.
+  /// All other routes either work without auth (feed, stories, creators)
+  /// or handle auth at the screen level via [AuthGateWidget] so the user
+  /// is never silently bounced away.
+  static const _editorRoutes = <String>{
+    '/editorial',
   };
 
-  /// Route prefixes accessible without authentication.
-  static const _publicPrefixes = <String>{'/feed/', '/stories/', '/creators/'};
+  static const _editorPrefixes = <String>{'/editorial/'};
 
   /// Routes that require admin role.
   static const _adminRoutes = <String>{
@@ -201,31 +204,39 @@ class MbeRouter {
     ],
 
     // ── Auth redirect ─────────────────────────────────────────────────
+    //
+    // Lazy auth: most routes are allowed through for unauthenticated
+    // users. Screens that need auth show an inline login prompt via
+    // AuthGateWidget instead of bouncing to /feed. Only editorial
+    // (editor-role) and admin routes hard-redirect.
     redirect: (context, state) {
       final authStatus = MaiBhiEditor.authProvider.authStatus;
       final isAuthenticated = authStatus == AuthStatus.authenticated;
       final currentPath = state.uri.path;
-      final isPublicRoute = _publicRoutes.contains(currentPath) ||
-          _publicPrefixes.any(currentPath.startsWith);
 
       // If still loading auth state, don't redirect yet.
       if (authStatus == AuthStatus.unknown) {
         return null;
       }
 
-      // Unauthenticated user trying to access a protected route.
-      if (!isAuthenticated && !isPublicRoute) {
+      // Editorial routes require editor role — hard redirect.
+      final isEditorRoute = _editorRoutes.contains(currentPath) ||
+          _editorPrefixes.any(currentPath.startsWith);
+      if (isEditorRoute && !isAuthenticated) {
         return MbeRoutes.feed;
       }
 
       // Admin route guard.
-      if (_adminRoutes.contains(currentPath) && isAuthenticated) {
+      if (_adminRoutes.contains(currentPath)) {
+        if (!isAuthenticated) return MbeRoutes.feed;
         final user = MaiBhiEditor.authProvider.currentUser;
         if (user == null || !user.isAdmin) {
           return MbeRoutes.feed;
         }
       }
 
+      // All other routes pass through. Screens use AuthGateWidget
+      // to show an inline login prompt when needed.
       return null;
     },
 
