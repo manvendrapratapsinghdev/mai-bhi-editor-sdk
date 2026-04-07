@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 
 import '../../../../core/constants/api_constants.dart';
@@ -6,6 +8,19 @@ import '../../domain/entities/ai_review_result.dart';
 import '../../domain/entities/submission.dart';
 import '../../domain/entities/submission_detail.dart';
 import '../models/submission_create_model.dart';
+
+/// Paginated result from a cursor-based list endpoint.
+class PaginatedResult<T> {
+  final List<T> items;
+  final String? nextCursor;
+  final bool hasMore;
+
+  const PaginatedResult({
+    required this.items,
+    this.nextCursor,
+    this.hasMore = false,
+  });
+}
 
 /// Remote data source for submission endpoints.
 abstract class SubmissionRemoteDataSource {
@@ -17,9 +32,9 @@ abstract class SubmissionRemoteDataSource {
   });
 
   /// GET /submissions/my — list current user's submissions.
-  Future<List<Submission>> getMySubmissions({
+  Future<PaginatedResult<Submission>> getMySubmissions({
     String? status,
-    int page = 1,
+    String? cursor,
     int limit = 20,
   });
 
@@ -49,16 +64,19 @@ class SubmissionRemoteDataSourceImpl implements SubmissionRemoteDataSource {
     void Function(double progress)? onProgress,
   }) async {
     try {
-      final formData = FormData.fromMap({
+      final formMap = <String, dynamic>{
         'title': data.title,
         'description': data.description,
         'city': data.city,
-        'tags': data.tags.join(','),
         'cover_image': await MultipartFile.fromFile(
           coverImagePath,
           filename: 'cover_image.jpg',
         ),
-      });
+      };
+      if (data.tags.isNotEmpty) {
+        formMap['tags'] = jsonEncode(data.tags);
+      }
+      final formData = FormData.fromMap(formMap);
 
       final response = await _dio.post(
         ApiConstants.submissions,
@@ -80,18 +98,20 @@ class SubmissionRemoteDataSourceImpl implements SubmissionRemoteDataSource {
   }
 
   @override
-  Future<List<Submission>> getMySubmissions({
+  Future<PaginatedResult<Submission>> getMySubmissions({
     String? status,
-    int page = 1,
+    String? cursor,
     int limit = 20,
   }) async {
     try {
       final queryParams = <String, dynamic>{
-        'page': page,
         'limit': limit,
       };
       if (status != null) {
         queryParams['status'] = status;
+      }
+      if (cursor != null) {
+        queryParams['cursor'] = cursor;
       }
 
       final response = await _dio.get(
@@ -100,19 +120,23 @@ class SubmissionRemoteDataSourceImpl implements SubmissionRemoteDataSource {
       );
 
       final data = response.data;
-      if (data is List) {
-        return data
-            .map((e) => Submission.fromJson(e as Map<String, dynamic>))
-            .toList();
-      }
-      // Handle paginated response shape: { "items": [...], ... }
       if (data is Map<String, dynamic> && data.containsKey('items')) {
-        final items = data['items'] as List;
-        return items
+        final items = (data['items'] as List)
             .map((e) => Submission.fromJson(e as Map<String, dynamic>))
             .toList();
+        return PaginatedResult(
+          items: items,
+          nextCursor: data['next_cursor'] as String?,
+          hasMore: data['has_more'] as bool? ?? false,
+        );
       }
-      return [];
+      if (data is List) {
+        final items = data
+            .map((e) => Submission.fromJson(e as Map<String, dynamic>))
+            .toList();
+        return PaginatedResult(items: items);
+      }
+      return const PaginatedResult(items: []);
     } on DioException catch (e) {
       throw ServerException(
         message: e.message ?? 'Failed to fetch submissions',

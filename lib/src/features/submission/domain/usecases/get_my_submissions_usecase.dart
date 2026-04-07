@@ -1,3 +1,5 @@
+import '../../data/datasources/submission_remote_datasource.dart'
+    show PaginatedResult;
 import '../entities/submission.dart';
 import '../repositories/submission_repository.dart';
 
@@ -7,14 +9,14 @@ class GetMySubmissionsUseCase {
 
   const GetMySubmissionsUseCase(this._repository);
 
-  Future<List<Submission>> call({
+  Future<PaginatedResult<Submission>> call({
     SubmissionStatus? status,
-    int page = 1,
+    String? cursor,
     int limit = 20,
   }) {
     return _repository.getMySubmissions(
       status: status,
-      page: page,
+      cursor: cursor,
       limit: limit,
     );
   }

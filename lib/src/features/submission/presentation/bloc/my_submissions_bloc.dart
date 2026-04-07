@@ -34,16 +34,16 @@ class MySubmissionsBloc
   ) async {
     emit(state.copyWith(isLoading: true, clearError: true));
     try {
-      final submissions = await _getMySubmissionsUseCase(
+      final result = await _getMySubmissionsUseCase(
         status: state.filterStatus,
-        page: 1,
         limit: _pageSize,
       );
       emit(state.copyWith(
-        submissions: submissions,
+        submissions: result.items,
         isLoading: false,
-        hasMore: submissions.length >= _pageSize,
-        currentPage: 1,
+        hasMore: result.hasMore,
+        nextCursor: result.nextCursor,
+        clearCursor: result.nextCursor == null,
       ));
     } on ServerException catch (e) {
       emit(state.copyWith(
@@ -73,20 +73,20 @@ class MySubmissionsBloc
       submissions: [],
       isLoading: true,
       clearError: true,
-      currentPage: 1,
+      clearCursor: true,
     ));
 
     try {
-      final submissions = await _getMySubmissionsUseCase(
+      final result = await _getMySubmissionsUseCase(
         status: event.status,
-        page: 1,
         limit: _pageSize,
       );
       emit(state.copyWith(
-        submissions: submissions,
+        submissions: result.items,
         isLoading: false,
-        hasMore: submissions.length >= _pageSize,
-        currentPage: 1,
+        hasMore: result.hasMore,
+        nextCursor: result.nextCursor,
+        clearCursor: result.nextCursor == null,
       ));
     } on ServerException catch (e) {
       emit(state.copyWith(
@@ -105,21 +105,23 @@ class MySubmissionsBloc
     LoadMoreSubmissions event,
     Emitter<MySubmissionsState> emit,
   ) async {
-    if (!state.hasMore || state.isLoadingMore) return;
+    if (!state.hasMore || state.isLoadingMore || state.nextCursor == null) {
+      return;
+    }
 
-    final nextPage = state.currentPage + 1;
     emit(state.copyWith(isLoadingMore: true));
     try {
-      final submissions = await _getMySubmissionsUseCase(
+      final result = await _getMySubmissionsUseCase(
         status: state.filterStatus,
-        page: nextPage,
+        cursor: state.nextCursor,
         limit: _pageSize,
       );
       emit(state.copyWith(
-        submissions: [...state.submissions, ...submissions],
+        submissions: [...state.submissions, ...result.items],
         isLoadingMore: false,
-        hasMore: submissions.length >= _pageSize,
-        currentPage: nextPage,
+        hasMore: result.hasMore,
+        nextCursor: result.nextCursor,
+        clearCursor: result.nextCursor == null,
       ));
     } catch (e) {
       emit(state.copyWith(isLoadingMore: false));
@@ -131,16 +133,16 @@ class MySubmissionsBloc
     Emitter<MySubmissionsState> emit,
   ) async {
     try {
-      final submissions = await _getMySubmissionsUseCase(
+      final result = await _getMySubmissionsUseCase(
         status: state.filterStatus,
-        page: 1,
         limit: _pageSize,
       );
       emit(state.copyWith(
-        submissions: submissions,
-        hasMore: submissions.length >= _pageSize,
+        submissions: result.items,
+        hasMore: result.hasMore,
+        nextCursor: result.nextCursor,
+        clearCursor: result.nextCursor == null,
         clearError: true,
-        currentPage: 1,
       ));
     } on ServerException catch (e) {
       emit(state.copyWith(errorMessage: e.message));

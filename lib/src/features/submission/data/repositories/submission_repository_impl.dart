@@ -2,7 +2,8 @@ import '../../domain/entities/ai_review_result.dart';
 import '../../domain/entities/submission.dart';
 import '../../domain/entities/submission_detail.dart';
 import '../../domain/repositories/submission_repository.dart';
-import '../datasources/submission_remote_datasource.dart';
+import '../datasources/submission_remote_datasource.dart'
+    show PaginatedResult, SubmissionRemoteDataSource;
 import '../local/draft_local_datasource.dart';
 import '../models/submission_create_model.dart';
 
@@ -42,33 +43,39 @@ class SubmissionRepositoryImpl implements SubmissionRepository {
   }
 
   @override
-  Future<List<Submission>> getMySubmissions({
+  Future<PaginatedResult<Submission>> getMySubmissions({
     SubmissionStatus? status,
-    int page = 1,
+    String? cursor,
     int limit = 20,
   }) async {
     final statusString = status != null ? _statusToString(status) : null;
 
     // Fetch remote submissions.
-    final remoteSubmissions = await _remoteDataSource.getMySubmissions(
+    final result = await _remoteDataSource.getMySubmissions(
       status: statusString,
-      page: page,
+      cursor: cursor,
       limit: limit,
     );
 
-    // Merge local drafts if no status filter, or if filtering for drafts.
-    if (status == null || status == SubmissionStatus.draft) {
+    // Merge local drafts on the first page (no cursor) if no status
+    // filter, or if filtering for drafts.
+    if (cursor == null &&
+        (status == null || status == SubmissionStatus.draft)) {
       final drafts = await _draftLocalDataSource.getAllDrafts();
       final draftSubmissions = drafts.map((d) => d.toSubmission()).toList();
 
       if (status == SubmissionStatus.draft) {
-        return draftSubmissions;
+        return PaginatedResult(items: draftSubmissions);
       }
-      // Prepend drafts to the list.
-      return [...draftSubmissions, ...remoteSubmissions];
+      // Prepend drafts to the first page.
+      return PaginatedResult(
+        items: [...draftSubmissions, ...result.items],
+        nextCursor: result.nextCursor,
+        hasMore: result.hasMore,
+      );
     }
 
-    return remoteSubmissions;
+    return result;
   }
 
   @override

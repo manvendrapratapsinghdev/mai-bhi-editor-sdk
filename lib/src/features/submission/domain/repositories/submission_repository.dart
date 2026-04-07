@@ -1,6 +1,7 @@
 import '../entities/submission.dart';
 import '../entities/submission_detail.dart';
 import '../entities/ai_review_result.dart';
+import '../../data/datasources/submission_remote_datasource.dart';
 import '../../data/models/submission_create_model.dart';
 
 /// Abstract contract for submission operations.
@@ -13,9 +14,9 @@ abstract class SubmissionRepository {
   });
 
   /// Fetch the current user's submissions, optionally filtered by status.
-  Future<List<Submission>> getMySubmissions({
+  Future<PaginatedResult<Submission>> getMySubmissions({
     SubmissionStatus? status,
-    int page = 1,
+    String? cursor,
     int limit = 20,
   });
 

@@ -20,8 +20,8 @@ class MySubmissionsState extends Equatable {
   /// Error message, or null.
   final String? errorMessage;
 
-  /// Current page number for pagination.
-  final int currentPage;
+  /// Cursor for next page (ISO datetime from backend).
+  final String? nextCursor;
 
   const MySubmissionsState({
     this.submissions = const [],
@@ -30,7 +30,7 @@ class MySubmissionsState extends Equatable {
     this.hasMore = true,
     this.filterStatus,
     this.errorMessage,
-    this.currentPage = 1,
+    this.nextCursor,
   });
 
   MySubmissionsState copyWith({
@@ -42,7 +42,8 @@ class MySubmissionsState extends Equatable {
     bool clearFilter = false,
     String? errorMessage,
     bool clearError = false,
-    int? currentPage,
+    String? nextCursor,
+    bool clearCursor = false,
   }) {
     return MySubmissionsState(
       submissions: submissions ?? this.submissions,
@@ -53,7 +54,8 @@ class MySubmissionsState extends Equatable {
           clearFilter ? null : (filterStatus ?? this.filterStatus),
       errorMessage:
           clearError ? null : (errorMessage ?? this.errorMessage),
-      currentPage: currentPage ?? this.currentPage,
+      nextCursor:
+          clearCursor ? null : (nextCursor ?? this.nextCursor),
     );
   }
 
@@ -68,6 +70,6 @@ class MySubmissionsState extends Equatable {
         hasMore,
         filterStatus,
         errorMessage,
-        currentPage,
+        nextCursor,
       ];
 }
